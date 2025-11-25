@@ -21,8 +21,8 @@ function onFileChange(event: Event) {
   if (!files || files.length === 0) return
   const file = files[0]
   if (file) {
-    thumbnailFile.value = file
-    thumbnail.value = URL.createObjectURL(file)
+    thumbnailFile.value = file!
+    thumbnail.value = URL.createObjectURL(file!)
   }
 }
 
