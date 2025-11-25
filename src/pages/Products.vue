@@ -302,7 +302,7 @@ function formatCurrency(value: number) {
                 <span class="text-xs uppercase tracking-[0.3em] text-slate-500">Price Range</span>
                 <button class="text-xs text-indigo-300 hover:text-white" @click="resetFilters">Reset</button>
               </div>
-              <div class="flex gap-2">
+              <div class="flex gap-2 flex-col">
                 <input
                   v-model.number="priceFilter.min"
                   type="number"
@@ -392,7 +392,6 @@ function formatCurrency(value: number) {
         <button class="lg:hidden rounded-full border border-white/10 p-2" @click="toggleSidebar">
           <Menu class="w-5 h-5" />
         </button>
-        <div class="text-lg font-semibold tracking-wide hidden md:block">In</div>
         <div class="flex-1 max-w-xl">
           <div class="relative">
             <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />

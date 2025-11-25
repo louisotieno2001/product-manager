@@ -16,6 +16,16 @@ const thumbnailFile = ref<File | null>(null)
 const error = ref('')
 const isSubmitting = ref(false)
 
+function onFileChange(event: Event) {
+  const files = (event.target as HTMLInputElement).files
+  if (!files || files.length === 0) return
+  const file = files[0]
+  if (file) {
+    thumbnailFile.value = file
+    thumbnail.value = URL.createObjectURL(file)
+  }
+}
+
 async function handleSubmit() {
   error.value = ''
 
@@ -148,13 +158,7 @@ function goBack() {
               type="file"
               accept="image/*"
               class="hidden"
-              @change="(event: Event) => {
-                const files = (event.target as HTMLInputElement).files
-                if (files && files[0]) {
-                  thumbnailFile.value = files[0]
-                  thumbnail.value = URL.createObjectURL(files[0])
-                }
-              }"
+              @change="onFileChange"
             />
             <span class="text-sm text-slate-400">Click to upload an image (JPG, PNG, GIF)</span>
             <span v-if="thumbnailFile" class="text-xs text-slate-500 mt-2">{{ thumbnailFile?.name }}</span>

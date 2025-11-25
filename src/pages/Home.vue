@@ -34,7 +34,7 @@ const features = [
     <main class="px-4 sm:px-6 lg:px-12 py-10 space-y-16">
       <section class="text-center space-y-6">
         <div class="inline-flex items-center px-4 py-1 rounded-full bg-white/5 text-indigo-300 text-xs tracking-[0.3em] uppercase">
-          <Globe class="mr-2" size="14" />
+          <Globe class="mr-2" :size="14" />
           Future of Business
         </div>
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight text-white">
