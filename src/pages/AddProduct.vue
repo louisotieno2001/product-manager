@@ -12,6 +12,7 @@ const category = ref('')
 const price = ref('')
 const stock = ref('')
 const thumbnail = ref('')
+const thumbnailFile = ref<File | null>(null)
 const error = ref('')
 const isSubmitting = ref(false)
 
@@ -62,119 +63,124 @@ function goBack() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100 p-6">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
-      <h2 class="text-3xl font-bold mb-2 text-primary">Add New Product</h2>
-      <p class="text-gray-600 mb-6">Fill in all the details to create a new product</p>
+  <div class="min-h-screen bg-[#050B19] flex items-center justify-center px-4 py-10">
+    <div class="w-full max-w-3xl bg-[#0E1525] border border-white/5 rounded-3xl shadow-2xl p-8 text-slate-100">
+      <div class="mb-8 text-center space-y-2">
+        <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Catalog</p>
+        <h2 class="text-3xl font-semibold text-white">Add New Product</h2>
+        <p class="text-slate-400">Provide the details below to publish an item into your marketplace.</p>
+      </div>
 
-      <form @submit.prevent="handleSubmit" class="space-y-4">
-        <!-- Error Message -->
-        <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+      <form @submit.prevent="handleSubmit" class="space-y-6">
+        <div v-if="error" class="p-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-200 text-sm">
           {{ error }}
         </div>
 
-        <!-- Title -->
-        <div>
-          <label for="title" class="block mb-2 font-semibold text-gray-900">Title *</label>
-          <input
-            v-model="title"
-            id="title"
-            type="text"
-            required
-            placeholder="Product title"
-            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="space-y-2">
+            <label for="title" class="text-sm font-semibold text-slate-300">Title *</label>
+            <input
+              v-model="title"
+              id="title"
+              type="text"
+              required
+              placeholder="Product title"
+              class="w-full bg-[#050B19] border border-white/10 rounded-2xl px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="category" class="text-sm font-semibold text-slate-300">Category *</label>
+            <input
+              v-model="category"
+              id="category"
+              type="text"
+              required
+              placeholder="e.g., Electronics"
+              class="w-full bg-[#050B19] border border-white/10 rounded-2xl px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500/40 focus:outline-none"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="price" class="text-sm font-semibold text-slate-300">Price *</label>
+            <input
+              v-model="price"
+              id="price"
+              type="number"
+              step="0.01"
+              required
+              placeholder="0.00"
+              class="w-full bg-[#050B19] border border-white/10 rounded-2xl px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500/40 focus:outline-none"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label for="stock" class="text-sm font-semibold text-slate-300">Stock *</label>
+            <input
+              v-model="stock"
+              id="stock"
+              type="number"
+              required
+              placeholder="0"
+              class="w-full bg-[#050B19] border border-white/10 rounded-2xl px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500/40 focus:outline-none"
+            />
+          </div>
         </div>
 
-        <!-- Description -->
-        <div>
-          <label for="description" class="block mb-2 font-semibold text-gray-900">Description *</label>
+        <div class="space-y-2">
+          <label for="description" class="text-sm font-semibold text-slate-300">Description *</label>
           <textarea
             v-model="description"
             id="description"
             rows="4"
             required
-            placeholder="Product description"
-            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Tell buyers what makes this product special"
+            class="w-full bg-[#050B19] border border-white/10 rounded-2xl px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500/40 focus:outline-none"
           ></textarea>
         </div>
 
-        <!-- Category -->
-        <div>
-          <label for="category" class="block mb-2 font-semibold text-gray-900">Category *</label>
-          <input
-            v-model="category"
-            id="category"
-            type="text"
-            required
-            placeholder="e.g., Electronics"
-            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
+        <div class="space-y-2">
+          <label class="text-sm font-semibold text-slate-300">Thumbnail *</label>
+          <label
+            class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/10 rounded-2xl cursor-pointer bg-[#050B19]/60 hover:border-indigo-400/60 transition"
+          >
+            <input
+              type="file"
+              accept="image/*"
+              class="hidden"
+              @change="(event: Event) => {
+                const files = (event.target as HTMLInputElement).files
+                if (files && files[0]) {
+                  thumbnailFile.value = files[0]
+                  thumbnail.value = URL.createObjectURL(files[0])
+                }
+              }"
+            />
+            <span class="text-sm text-slate-400">Click to upload an image (JPG, PNG, GIF)</span>
+            <span v-if="thumbnailFile" class="text-xs text-slate-500 mt-2">{{ thumbnailFile?.name }}</span>
+          </label>
         </div>
 
-        <!-- Price -->
-        <div>
-          <label for="price" class="block mb-2 font-semibold text-gray-900">Price *</label>
-          <input
-            v-model="price"
-            id="price"
-            type="number"
-            step="0.01"
-            required
-            placeholder="0.00"
-            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-
-        <!-- Stock -->
-        <div>
-          <label for="stock" class="block mb-2 font-semibold text-gray-900">Stock *</label>
-          <input
-            v-model="stock"
-            id="stock"
-            type="number"
-            required
-            placeholder="0"
-            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-
-        <!-- Thumbnail URL -->
-        <div>
-          <label for="thumbnail" class="block mb-2 font-semibold text-gray-900">Thumbnail URL *</label>
-          <input
-            v-model="thumbnail"
-            id="thumbnail"
-            type="url"
-            required
-            placeholder="https://example.com/image.jpg"
-            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-
-        <!-- Image Preview -->
-        <div v-if="thumbnail" class="flex justify-center">
+        <div v-if="thumbnail" class="bg-[#050B19] border border-white/10 rounded-2xl p-4 flex justify-center">
           <img
             :src="thumbnail"
             alt="Preview"
-            class="max-w-xs max-h-48 object-cover rounded"
-            @error="error = 'Invalid image URL'"
+            class="max-w-sm max-h-56 object-cover rounded-xl border border-white/5"
           />
         </div>
 
-        <!-- Buttons -->
-        <div class="flex gap-4 pt-6">
+        <div class="flex flex-col sm:flex-row gap-4 pt-4">
           <button
             type="button"
             @click="goBack"
-            class="flex-1 px-6 py-3 bg-gray-300 text-gray-900 rounded-lg hover:bg-gray-400 font-semibold"
+            class="flex-1 px-6 py-3 rounded-2xl border border-white/10 text-slate-200 hover:bg-white/5 transition"
           >
             Cancel
           </button>
           <button
             type="submit"
             :disabled="isSubmitting"
-            class="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-900 font-semibold disabled:opacity-50"
+            class="flex-1 px-6 py-3 rounded-2xl bg-indigo-500 text-white font-semibold hover:bg-indigo-400 transition disabled:opacity-50"
           >
             {{ isSubmitting ? 'Adding...' : 'Add Product' }}
           </button>
