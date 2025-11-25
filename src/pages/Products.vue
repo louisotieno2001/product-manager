@@ -259,7 +259,7 @@ function formatCurrency(value: number) {
           <p class="text-sm text-slate-400">{{ businessProfile.email }}</p>
         </div>
       </div>
-      <div class="flex-1 overflow-y-auto pb-6">
+      <div class="flex-1 overflow-y-auto max-h-full pb-6">
         <nav class="px-4 space-y-1">
           <p class="px-4 text-xs uppercase tracking-[0.3em] text-slate-500 mb-4">Products</p>
           <div v-for="item in primaryNav" :key="item.label" class="space-y-2">
